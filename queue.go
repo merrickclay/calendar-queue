@@ -1,5 +1,7 @@
 package calendarqueue
 
+import "fmt"
+
 type CalendarQueue[T any] struct {
 	buckets    []*event[T]
 	numBuckets int
@@ -104,6 +106,19 @@ func (q *CalendarQueue[T]) Dequeue() *event[T] {
 	return q.Dequeue()
 }
 
+func (q *CalendarQueue[T]) String() string {
+	out := fmt.Sprintf("NumBuckets: %d\nBucketWidth: %f\nResizeEnabled: %t\nBottomResizeThreshold: %d\nTopResizeThreshold: %d\nSize: %d\nLastBucket: %d\nBucketTop: %f\nLastPrio: %f\nBuckets:\n", q.numBuckets, q.bucketWidth, q.resizeEnabled, q.botResizeThreshold, q.topResizeThreshold, q.size, q.lastBucket, q.bucketTop, q.lastPrio)
+	for i := 0; i < len(q.buckets); i++ {
+		out += fmt.Sprintf("Bucket %d: \n", i)
+		curr := q.buckets[i]
+		for curr != nil {
+			out += fmt.Sprintf("\tPrio: %f, Data: %v\n", curr.priority, curr.Data)
+			curr = curr.next
+		}
+	}
+	return out
+}
+
 func (q *CalendarQueue[T]) localInit(numBuckets int, bucketWidth, startPrio float64) {
 	q.buckets = make([]*event[T], numBuckets)
 	q.bucketWidth = bucketWidth
@@ -204,4 +219,8 @@ func NewEvent[T any](data T, priority float64) *event[T] {
 		priority: priority,
 		next:     nil,
 	}
+}
+
+func (e event[T]) String() string {
+	return fmt.Sprintf("Priority: %f\nData: %v", e.priority, e.Data)
 }
