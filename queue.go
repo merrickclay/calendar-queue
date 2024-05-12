@@ -121,6 +121,7 @@ func (q *CalendarQueue[T]) resize(numBuckets int) {
 	if !q.resizeEnabled {
 		return
 	}
+
 	bucketWidth := q.newWidth()
 	oldBuckets := q.buckets
 	oldNumBuckets := q.numBuckets
@@ -128,7 +129,7 @@ func (q *CalendarQueue[T]) resize(numBuckets int) {
 	for i := oldNumBuckets - 1; i >= 0; i-- {
 		curr := oldBuckets[i]
 		for curr != nil {
-			e := NewEvent(curr.data, curr.priority)
+			e := NewEvent(curr.Data, curr.priority)
 			q.Enqueue(e)
 			curr = curr.next
 		}
@@ -192,14 +193,14 @@ func (q *CalendarQueue[T]) newWidth() float64 {
 }
 
 type event[T any] struct {
-	data     T
+	Data     T
 	priority float64
 	next     *event[T]
 }
 
 func NewEvent[T any](data T, priority float64) *event[T] {
 	return &event[T]{
-		data:     data,
+		Data:     data,
 		priority: priority,
 		next:     nil,
 	}
