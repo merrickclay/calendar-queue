@@ -7,10 +7,10 @@ type CalendarQueue[T any] struct {
 	numBuckets int
 	lastBucket int
 
-	bucketWidth float32
-	bucketTop   float32
+	bucketWidth float64
+	bucketTop   float64
 
-	lastPrio float32
+	lastPrio float64
 
 	size         int
 	topThreshold int // TODO: rename
@@ -71,7 +71,7 @@ func (q *CalendarQueue[T]) Dequeue() *event[T] {
 
 	}
 
-	var minPrio float32
+	var minPrio float64
 	for i, bucket := range q.buckets {
 		if bucket != nil {
 			q.lastBucket = i
@@ -91,18 +91,18 @@ func (q *CalendarQueue[T]) Dequeue() *event[T] {
 	}
 
 	n := q.lastPrio / q.bucketWidth
-	q.bucketTop = (float32(n) + 1.5) * q.bucketWidth
+	q.bucketTop = (float64(n) + 1.5) * q.bucketWidth
 
 	return q.Dequeue()
 }
 
 type event[T any] struct {
 	data     T
-	priority float32
+	priority float64
 	next     *event[T]
 }
 
-func NewEvent[T any](data T, priority float32) event[T] {
+func NewEvent[T any](data T, priority float64) event[T] {
 	return event[T]{
 		data:     data,
 		priority: priority,
