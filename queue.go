@@ -33,7 +33,7 @@ func (q *CalendarQueue[T]) Enqueue(entry *event[T]) {
 	} else {
 		current := q.buckets[i]
 		for current.next != nil {
-			if current.priority < entry.priority {
+			if current.next.priority < entry.priority {
 				current = current.next
 			} else {
 				break
